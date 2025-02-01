@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMS Spam Detection</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <ul>
+            <li><a href="#predict">Prediction</a></li>
+            <li><a href="#graph">Graph</a></li>
+            <li><a href="#summary">Summary</a></li>
+        </ul>
+    </div>
+
+    <div class="container" id="predict">
+        <h1>SMS Spam Detection</h1>
+        <form method="POST" action="/predict">
+            <textarea id="message" name="message" placeholder="Enter your message here..." rows="5" cols="50">{{ input_message if input_message else '' }}</textarea><br><br>
+            <button type="submit" class="btn-submit">Check</button><br>
+            <!-- <select name="model" >
+                <option value="Select Model">Select Model</option>
+                <optgroup label="Models">
+                    <option value="Naive Bayes">Naive bayes</option>
+                    <option value="Random Forest">Random Forest</option>
+                    <option value="Decision Tree">Decision Tree</option>
+                    <option value="SVM">SVM</option>
+                </optgroup>
+            </select> -->
+            <div class="dem">
+                <button type="button" class="btn-sample" onclick="fillSample('Urgent! Your account has been compromised. Please verify your details immediately by visiting: http://fakebank.com')">Sample Spam 1</button>
+                
+                <button type="button" class="btn-sample" onclick="fillSample('Hey, are we still meeting for dinner tonight?')">Sample Ham 1</button>
+                <button type="button" class="btn-sample" onclick="fillSample('You might be eligible for a discount on your next purchase!')">Sample Might be Spam</button>
+            </div>
+        </form>
+
+        {% if prediction %}
+        <div class="result">
+            
+            <!-- <h3>Model: {{ model_name }}</h3> -->
+            <h2>Prediction: <strong>{{ prediction }}</strong></h2>
+            <p>Spam Probability: {{ spam_prob }}%</p>
+            <p>Ham Probability: {{ ham_prob }}%</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="container" id="graph">
+        <h2>Prediction Graph</h2>
+        <div>
+            <img src="/static/Random Forestconfusion_matrix.png" alt="Confusion Matrix">
+        </div>
+    </div>
+
+    <div class="container" id="summary">
+        <h2>Model Performance Summary</h2>
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Model</th>
+                    <th>Accuracy</th>
+                    <th>Precision</th>
+                    <th>Recall</th>
+                    <th>F1-Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for index,metrics in model_metrics.items() %}
+                <tr>
+                    <td>{{ index }}</td>
+                    <td>{{ metrics["accuracy"]}}%</td>
+                    <td>{{ metrics["precision"] }}%</td>
+                    <td>{{ metrics["recall"] }}%</td>
+                    <td>{{ metrics["f1"] }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <div class="footer-section">
+            <h3>About This Project</h3>
+            <p>
+                This project demonstrates a machine learning-based SMS spam detection system using various models, 
+                including Decision Tree, Random Forest, SVM, and Naive Bayes.
+            </p>
+        </div>
+        <div class="footer-section">
+            <h3>Real-Life Applications</h3>
+            <ul>
+                <li>Filtering spam messages in messaging apps.</li>
+                <li>Improving user experience by reducing unwanted messages.</li>
+                <li>Enhancing security by preventing phishing attacks.</li>
+            </ul>
+        </div>
+        <p>&copy; 2025 Your Name. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function fillSample(message) {
+            document.getElementById('message').value = message;
+        }
+    </script>
+</body>
+</html>
